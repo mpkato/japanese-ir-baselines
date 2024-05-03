@@ -1,0 +1,1 @@
+from .ntcir_data_search_j import ntcir_data_search_j

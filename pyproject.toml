@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "japanese-ir-baselines"
+version = "0.1.0"
+description = ""
+authors = ["Makoto P. Kato <mpkato@acm.org>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+onnxruntime = "1.16.3"
+pyserini = "0.25.0"
+faiss-cpu = "^1.8.0"
+torch = {version = "^2.3.0+cu118", source = "torch_cu118"}
+datasets = "^2.19.0"
+ir-measures = "^0.3.3"
+
+
+[[tool.poetry.source]]
+name = "torch_cu118"
+url = "https://download.pytorch.org/whl/cu118"
+priority = "explicit"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
