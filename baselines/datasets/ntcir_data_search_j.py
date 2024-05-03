@@ -2,70 +2,65 @@ import os
 import shutil
 import bz2
 import json
+import logging
 from huggingface_hub import hf_hub_download
 from datasets import Dataset
+from baselines.datasets.base import DatasetBase
 
-def ntcir_data_search_j(args):
-    topics_filepath = os.path.join(args.output_dirpath, "test", "topics.tsv")
-    qrels_filepath = os.path.join(args.output_dirpath, "qrels.txt")
-    corpus_filepath = os.path.join(args.output_dirpath, "corpus", "ntcir_data_search_j.jsonl")
+class NtcirDataSearchJ(DatasetBase):
 
-    filepath_to_func = {
-        topics_filepath: ntcir_data_search_j_topics,
-        qrels_filepath: ntcir_data_search_j_qrels,
-        corpus_filepath: ntcir_data_search_j_corpus,
+    MD5 = {
+        "topics": "e12d168a19103822f145d7f16c1a4b57",
+        "qrels": "c03cbb9ae5c610f7a4bf9d119be77e04",
+        "docs": "cd53a68cc3230663b56f88d953f2fa8b",
     }
-    for filepath, func in filepath_to_func.items():
-        if not os.path.exists(filepath):
-            func(filepath)
-            print(f"{func.__name__}: {filepath}")
 
-def ntcir_data_search_j_topics(filepath):
-    collection_filepath = hf_hub_download(
-        repo_id="mpkato/ntcir_data_search", 
-        filename="data_search_j_test_topics.tsv", 
-        repo_type="dataset"
-    )
-    os.makedirs(os.path.dirname(filepath), exist_ok=True)
-    shutil.copyfile(collection_filepath, filepath)
+    def get_topics(self, filepath):
+        collection_filepath = hf_hub_download(
+            repo_id="mpkato/ntcir_data_search", 
+            filename="data_search_j_test_topics.tsv", 
+            repo_type="dataset"
+        )
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+        shutil.copyfile(collection_filepath, filepath)
 
-def ntcir_data_search_j_qrels(filepath):
-    collection_filepath = hf_hub_download(
-        repo_id="mpkato/ntcir_data_search", 
-        filename="data_search_j_test_qrels.txt", 
-        repo_type="dataset"
-    )
-    def generate_qrels():
-        with open(collection_filepath) as f:
-            for line in f:
-                qid, did, rel_level = line.split(" ")
-                # There is a prefix "L" in rel_level. Remove it, e.g., "L1" -> "1".
-                grade = int(rel_level[1:]) 
-                yield {
-                    "qid": qid,
-                    "Q0": "Q0",
-                    "did": did,
-                    "grade": grade
-                }
+    def get_qrels(self, filepath):
+        collection_filepath = hf_hub_download(
+            repo_id="mpkato/ntcir_data_search", 
+            filename="data_search_j_test_qrels.txt", 
+            repo_type="dataset"
+        )
+        def generate_qrels():
+            with open(collection_filepath) as f:
+                for line in f:
+                    qid, did, rel_level = line.split(" ")
+                    # There is a prefix "L" in rel_level. Remove it, e.g., "L1" -> "1".
+                    grade = int(rel_level[1:]) 
+                    yield {
+                        "qid": qid,
+                        "Q0": "Q0",
+                        "did": did,
+                        "grade": grade
+                    }
 
-    dataset = Dataset.from_generator(generate_qrels)
-    dataset.to_csv(filepath, sep=' ', index=None, header=None)
+        dataset = Dataset.from_generator(generate_qrels)
+        dataset.to_csv(filepath, sep=' ', index=None, header=None)
 
-def ntcir_data_search_j_corpus(filepath):
-    collection_filepath = hf_hub_download(
-        repo_id="mpkato/ntcir_data_search", 
-        filename="data_search_j_collection.jsonl.bz2", 
-        repo_type="dataset"
-    )
-    def generate_corpus_data():
-        with bz2.open(collection_filepath, 'rt') as f:
-            for line in f:
-                data = json.loads(line)
-                yield {
-                    "id": data["id"],
-                    "contents": "\n".join([data["title"], data["description"]]
-                                          + list(data["data_fields"].values()))
-                }
+    def get_docs(self, filepath):
+        collection_filepath = hf_hub_download(
+            repo_id="mpkato/ntcir_data_search", 
+            filename="data_search_j_collection.jsonl.bz2", 
+            repo_type="dataset"
+        )
+        def generate_doc_data():
+            with bz2.open(collection_filepath, 'rt') as f:
+                for line in f:
+                    data = json.loads(line)
+                    yield {
+                        "id": data["id"],
+                        "contents": "\n".join([data["title"], data["description"]]
+                                            + list(data["data_fields"].values()))
+                    }
 
-    dataset = Dataset.from_generator(generate_corpus_data)
-    dataset.to_json(filepath)
+        dataset = Dataset.from_generator(generate_doc_data)
+        self.to_multi_jsonl(dataset, filepath)

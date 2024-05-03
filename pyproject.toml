@@ -13,6 +13,8 @@ faiss-cpu = "^1.8.0"
 torch = {version = "^2.3.0+cu118", source = "torch_cu118"}
 datasets = "^2.19.0"
 ir-measures = "^0.3.3"
+dirhash = "^0.4.0"
+more-itertools = "^10.2.0"
 
 
 [[tool.poetry.source]]

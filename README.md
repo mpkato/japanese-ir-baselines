@@ -14,11 +14,11 @@ $ poetry run python -m baselines.prepare_datasets \
 ```bash
 $ poetry run python -m pyserini.index.lucene \
   --collection JsonCollection \
-  --input datasets/ntcir_data_search_j/corpus \
+  --input datasets/ntcir_data_search_j/docs \
   --language ja \
   --index indexes/ntcir_data_search_j \
   --generator DefaultLuceneDocumentGenerator \
-  --threads 1 \
+  --threads 10 \
   --storePositions --storeDocvectors --storeRaw
 ```
 
@@ -27,7 +27,7 @@ $ poetry run python -m pyserini.index.lucene \
 ```bash
 $ poetry run python -m pyserini.search.lucene \
   --index indexes/ntcir_data_search_j \
-  --topics datasets/ntcir_data_search_j/test/topics.tsv \
+  --topics datasets/ntcir_data_search_j/test_topics.tsv \
   --output results/ntcir_data_search_j_bm25.trec \
   --language ja \
   --bm25

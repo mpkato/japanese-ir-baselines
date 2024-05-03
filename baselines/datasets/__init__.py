@@ -1,1 +1,1 @@
-from .ntcir_data_search_j import ntcir_data_search_j
+from .ntcir_data_search_j import NtcirDataSearchJ as ntcir_data_search_j
