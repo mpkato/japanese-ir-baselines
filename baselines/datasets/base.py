@@ -40,7 +40,7 @@ class DatasetBase(object):
                     for rtype, filename in self.FILENAMES.items()}
         for rtype, filepath in filepaths.items():
             self.logger.info(f"{rtype}: {filepath}")
-            if self.is_valid_file(filepath, self.MD5[rtype]):
+            if self.is_valid_file(filepath, self.config["md5"][rtype]):
                 self.logger.info(f"{rtype} already exists; skip preparation")
             else:
                 self._clean(filepath)

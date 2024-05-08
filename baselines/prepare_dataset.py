@@ -29,7 +29,7 @@ def main():
 
     with open(args.config) as yml:
         config = yaml.safe_load(yml)
-
+    config = config["datasets"][args.dataset_name]
     dataset = getattr(datasets, args.dataset_name)(config)
     dataset.prepare(args)
 

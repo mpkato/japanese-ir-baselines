@@ -1,3 +1,39 @@
-ntcir1:
-  topic_dirpath: original_data/NTCIR-1/topics
-  mlir_dirpath: original_data/NTCIR-1/mlir
+datasets:
+  ntcir_data_search_j:
+    md5:
+      topics: e12d168a19103822f145d7f16c1a4b57
+      qrels: c03cbb9ae5c610f7a4bf9d119be77e04
+      docs: cd53a68cc3230663b56f88d953f2fa8b
+  miracl_j:
+    md5:
+      topics: e12d168a19103822f145d7f16c1a4b57
+      qrels: c03cbb9ae5c610f7a4bf9d119be77e04
+      docs: cd53a68cc3230663b56f88d953f2fa8b
+  ntcir_1_j:
+    topic_filepath: original_data/NTCIR-1/topics/topic0031-0083
+    qrels_filepath: original_data/NTCIR-1/mlir/rel2_ntc1-j1_0031-0083
+    doc_filepath: original_data/NTCIR-1/mlir/ntc1-j1
+    grade_letter_to_int:
+      A: 2
+      B: 1
+      C: 0
+    md5:
+      topics: 94b0e23e8c3d92378f60c7e2ff7b9269
+      qrels: bfc4e420ec74d5a9473519f4463bbc9a
+      docs: 26356b2fc2fd68c3d5fa6c7729770cca
+  ntcir_2_j:
+    topic_filepath: original_data/NTCIR-2/topics/topic-j0101-0149
+    qrels_filepath: original_data/NTCIR-2/rels/rel2_ntc2-j2_0101-0149
+    doc_filepath: 
+      ntc1-j1: original_data/NTCIR-1/mlir/ntc1-j1
+      ntc2-j1g: original_data/NTCIR-2/j-docs/ntc2-j1g
+      ntc2-j1k: original_data/NTCIR-2/j-docs/ntc2-j1k
+    grade_letter_to_int:
+      S: 1
+      A: 1
+      B: 1
+      C: 0
+    md5:
+      topics: 5585dfddf19d22ee0c49dc91c18e50d0
+      qrels: 522a5684f215cb0e9e8cf861ca92ed5b
+      docs: 4fa9e4b2e752f55cbf59113762df185a

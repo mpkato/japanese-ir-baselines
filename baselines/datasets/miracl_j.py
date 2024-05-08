@@ -8,12 +8,6 @@ from baselines.datasets.base import DatasetBase
 
 class MiraclJ(DatasetBase):
 
-    MD5 = {
-        "topics": "e12d168a19103822f145d7f16c1a4b57",
-        "qrels": "c03cbb9ae5c610f7a4bf9d119be77e04",
-        "docs": "cd53a68cc3230663b56f88d953f2fa8b",
-    }
-
     def get_topics(self, filepath):
         self._download_and_copy(
             "miracl/miracl", 
