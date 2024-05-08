@@ -1,0 +1,3 @@
+ntcir1:
+  topic_dirpath: original_data/NTCIR-1/topics
+  mlir_dirpath: original_data/NTCIR-1/mlir

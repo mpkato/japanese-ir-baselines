@@ -1,10 +1,12 @@
 import logging
+import yaml
 from baselines import datasets
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
+NON_DATASETS = set(["base"])
 def find_available_datasets():
     return [func for func in dir(datasets)
-            if not func.startswith("__")]
+            if not func.startswith("__") and not func in NON_DATASETS]
 
 def main():
     logging.lastResort.setLevel(logging.INFO)
@@ -22,9 +24,13 @@ def main():
     parser.add_argument("dataset_name", help="dataset name",
                         choices=available_datasets)
     parser.add_argument("output_dirpath", help="filepath to the directory containing jsonl files.")
+    parser.add_argument("--config", default="config.yaml", help="filepath to the conf file (YAML).")
     args = parser.parse_args()
 
-    dataset = getattr(datasets, args.dataset_name)()
+    with open(args.config) as yml:
+        config = yaml.safe_load(yml)
+
+    dataset = getattr(datasets, args.dataset_name)(config)
     dataset.prepare(args)
 
 

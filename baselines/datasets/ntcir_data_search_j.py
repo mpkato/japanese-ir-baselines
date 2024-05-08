@@ -2,7 +2,6 @@ import os
 import shutil
 import bz2
 import json
-import logging
 from huggingface_hub import hf_hub_download
 from datasets import Dataset
 from baselines.datasets.base import DatasetBase
@@ -16,13 +15,11 @@ class NtcirDataSearchJ(DatasetBase):
     }
 
     def get_topics(self, filepath):
-        collection_filepath = hf_hub_download(
-            repo_id="mpkato/ntcir_data_search", 
-            filename="data_search_j_test_topics.tsv", 
-            repo_type="dataset"
+        self._download_and_copy(
+            "mpkato/ntcir_data_search",
+            "data_search_j_test_topics.tsv",
+            filepath
         )
-        os.makedirs(os.path.dirname(filepath), exist_ok=True)
-        shutil.copyfile(collection_filepath, filepath)
 
     def get_qrels(self, filepath):
         collection_filepath = hf_hub_download(

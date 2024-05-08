@@ -7,6 +7,7 @@ from tqdm import tqdm
 from datasets import Dataset
 from dirhash import dirhash
 from more_itertools import divide
+from huggingface_hub import hf_hub_download
 
 class DatasetBase(object):
 
@@ -22,7 +23,9 @@ class DatasetBase(object):
         "docs": "get_docs",
     }
 
-    def __init__(self):
+    def __init__(self, config, num_proc=10):
+        self.config = config
+        self.num_proc = num_proc
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
         formatter = logging.Formatter(
@@ -49,9 +52,18 @@ class DatasetBase(object):
                 os.remove(filepath)
             elif os.path.isdir(filepath):
                 shutil.rmtree(filepath)
+    
+    def _download_and_copy(self, repo_id: str, filename: str, output_filepath: str):
+        collection_filepath = hf_hub_download(
+            repo_id=repo_id, 
+            filename=filename, 
+            repo_type="dataset"
+        )
+        os.makedirs(os.path.dirname(output_filepath), exist_ok=True)
+        shutil.copyfile(collection_filepath, output_filepath)
 
     @classmethod
-    def to_multi_jsonl(cls, dataset, dirpath, filename="docs_{:02d}.jsonl", num=10):
+    def to_multi_jsonl(cls, dataset: Dataset, dirpath: str, filename="docs_{:02d}.jsonl", num=10):
         os.makedirs(dirpath, exist_ok=True)
         n = dataset.num_rows
         batch_indexes = divide(num, range(n))
@@ -70,7 +82,8 @@ class DatasetBase(object):
             if os.path.isfile(filepath):
                 actual_md5 = cls.filemd5(filepath)
             elif os.path.isdir(filepath):
-                actual_md5 = dirhash(filepath, "md5")
+                if os.listdir(filepath):
+                    actual_md5 = dirhash(filepath, "md5")
             return expected_md5 == actual_md5
         return False
     
